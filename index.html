@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+
+<head>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    <!-- Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+
+    <script crossorigin src="https://unpkg.com/react@16/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+    <style>
+        .body {
+            width: 400px;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        class App extends React.Component {
+
+            constructor(props) {
+                super(props);
+                this.state = {
+                    randomNumber: this.getRandomNumber(),
+                    numberOfGuessing: 0,
+                    inputValue: 0,
+                    message: ""
+                }
+            }
+
+            getRandomNumber = () => {
+                return Math.floor((Math.random() * 100) + 1);
+            }
+
+            newGame = () => {
+                this.setState({
+                    randomNumber: this.getRandomNumber(),
+                    numberOfGuessing: 0,
+                    inputValue: 0,
+                    message: ""
+                })
+            }
+
+            guess = () => {
+                let { inputValue } = this.state;
+                let numberOfGuessing = this.state.numberOfGuessing + 1;
+                if (inputValue > this.state.randomNumber) {
+                    this.setState({
+                        message: "You guess the number is big",
+                        numberOfGuessing
+                    })
+                } else if (inputValue < this.state.randomNumber) {
+                    this.setState({
+                        message: "You guess the number is small",
+                        numberOfGuessing
+                    })
+                } else {
+                    this.setState({
+                        message: "You win!"
+                    })
+                    alert("You win" + ", Your score: " + numberOfGuessing)
+                    this.newGame()
+                }
+            }
+
+            checkLose = () => {
+                let { numberOfGuessing } = this.state
+                if (numberOfGuessing > 10) {
+                    alert("You lose")
+                }
+            }
+
+            onValueChange = (event) => {
+                this.setState({
+                    inputValue: parseInt(event.target.value)
+                })
+            }
+
+            render() {
+                return (
+                    <div>
+                        {/* Header */}
+                        <div className="jumbotron text-center">
+                            <h1>Getting random number</h1>
+                            <p>Tôi đã chọn một số random trong khoảng 1 đến 100, bạn có thể đoán được?</p>
+                        </div>
+                        { /* Body */}
+                        <div className="body">
+                            <button onClick={() => this.newGame()}>New Game</button>
+                            <hr/>
+                            <p className="font-weight-bold">Số lần bạn đã đoán là: { this.state.numberOfGuessing }</p>
+                            <p className="font-weight-bold">Số bạn đoán là</p>
+                            <input type="number" value={this.state.inputValue} onChange={this.onValueChange}/>
+                            <button className="btn-success" onClick={() => this.guess()}> Đoán </button>
+                            <p>{ this.state.message }</p>
+                        </div>
+                    </div>
+                )
+            }
+        }
+
+        ReactDOM.render(<App />, document.getElementById("root"))
+    </script>
+
+
+</body>
